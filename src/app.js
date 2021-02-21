@@ -1,5 +1,6 @@
 const express = require('express');
 const usersRoutes = require('../routes/users_routes');
+const hostsRoutes = require('../routes/hosts_routes');
 const MongoServer = require('../config/db');
 const app = express();
 
@@ -15,6 +16,8 @@ app.use(bodyParser.json());
 // // // using the routes
 
 app.use('/users',usersRoutes);
+
+app.use('/hosting',hostsRoutes);
 
 
 
