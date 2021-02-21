@@ -11,7 +11,7 @@ module.exports = {
   all(req, res, next){
     const limit = parseInt(req.query.limit) || '';
     Users.find({}).limit(limit)
-    .then(users => res.status(200).send(users))
+    .then(users => res.status(200).json(users))
     .catch(next);
   },
   //
@@ -39,6 +39,7 @@ module.exports = {
         phone_number,
         profile_img
       });
+      console.log(user);
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
       await user.save();
