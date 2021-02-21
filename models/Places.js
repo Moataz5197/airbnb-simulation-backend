@@ -56,7 +56,6 @@ const PlacesSchema = new Schema({
     required: true
   }
 
-
 },{versionKey: false});
 
 const Places = mongoose.model('places', PlacesSchema);
