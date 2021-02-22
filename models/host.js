@@ -7,7 +7,7 @@ const HostsSchema = new Schema({
       type: ObjectId,
       required:true
 },
-listing:{
+listings:{
     type:Object,
     required:true
 }
