@@ -62,8 +62,9 @@ module.exports={
             cancellation_option
           });
 
-          // console.log(place);
           await place.save();
+          console.log(place);
+
           req.placeId=place["_id"]
           next();
         //   res.status(200).json(
