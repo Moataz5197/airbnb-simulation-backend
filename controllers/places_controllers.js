@@ -1,8 +1,5 @@
 const Places=require('../models/Places');
 
-const bcrypt=require('bcryptjs');
-const jwt=require('jsonwebtoken');
-
 module.exports={
 
     all(req,res,next){
@@ -31,7 +28,7 @@ module.exports={
 
     },
 
-    async add(req,res){
+    async add(req,res,next){
         const {
           place_type,
           space_allowed,
@@ -47,7 +44,7 @@ module.exports={
           price_per_night,
           cancellation_option
         } = req.body;
-
+      
         try {
           let place = await Places.findOne(
             {place_type,space_allowed,num_guests,total_bedrooms,total_bathrooms,num_beds,
@@ -73,14 +70,17 @@ module.exports={
             cancellation_option
           });
 
-          console.log(place);
           await place.save();
-          res.status(200).json(
-            place
-        );
+          console.log(place);
+
+          req.placeId=place["_id"]
+          next();
+        //   res.status(200).json(
+        //     place
+        // );
           } 
           catch (err){
-            console.log(err.message);
+            // console.log(err.message);
             res.status(500).send("Error in Saving");
           }
     },

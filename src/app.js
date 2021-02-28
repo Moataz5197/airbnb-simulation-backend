@@ -1,6 +1,8 @@
 const express = require('express');
 const usersRoutes = require('../routes/users_routes');
+const hostsRoutes = require('../routes/hosts_routes');
 const placesRoutes = require('../routes/places_routes');
+
 
 const MongoServer = require('../config/db');
 const app = express();
@@ -21,7 +23,7 @@ app.use((req,res,next)=>{
     );
     res.header(
       "Access-Control-Allow-Headers",
-      "Origin,X-Requested-With,Content-Type,Accept,Authorization"
+      "Origin,X-Requested-With,Content-Type,Accept,Authorization,token"
     );
     if(req.method==='OPTIONS'){
       res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,PATCH");
@@ -32,6 +34,8 @@ app.use((req,res,next)=>{
 // // // using the routes
 app.use('/users',usersRoutes);
 app.use('/places',placesRoutes);
+
+app.use('/hosting',hostsRoutes);
 
 
 
