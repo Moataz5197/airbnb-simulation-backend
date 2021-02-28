@@ -20,6 +20,7 @@ router.post('/signup',usersValidate,usersController.signup);
 router.post('/login',usersValidate,usersController.login);
 
 router.get('/me',users_auth,usersController.fetchUser);
+router.get('/:id',usersController.fetchUser2);
 
 router.delete('/delete/:id',usersController.delete);
 

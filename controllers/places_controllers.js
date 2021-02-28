@@ -6,20 +6,29 @@ const jwt=require('jsonwebtoken');
 module.exports={
 
     all(req,res,next){
-        const limit = parseInt(req.query.limit) || '';
-        Places.find({}).limit(limit)
-        .then(places => res.status(200).send(places))
-        .catch(next);
+        const city = req.query.city || '';
+        if(city!==''){
+          Places.find({'address.city':city})
+          .then(places => res.status(200).send(places))
+          .catch(next);
+        }
+        else{
+          Places.find({})
+          .then(places => res.status(200).send(places))
+          .catch(next);
+        }
     },
 
     async spec(req,res){
        try{
+         
         const place = await Places.findById(req.params.id);
         res.status(200).json(place);
        }
        catch (e) {
         res.send({ message: "This place couldn't be found" });
       }
+
     },
 
     async add(req,res){
@@ -38,7 +47,6 @@ module.exports={
           price_per_night,
           cancellation_option
         } = req.body;
-        console.log(req.body);
 
         try {
           let place = await Places.findOne(

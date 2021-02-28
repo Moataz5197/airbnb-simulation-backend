@@ -5,6 +5,7 @@ const router=express.Router();
 
 router.get('/',placesControllers.all);
 
+
 router.get('/:id',placesControllers.spec);
 
 router.post('/add',placesControllers.add);
