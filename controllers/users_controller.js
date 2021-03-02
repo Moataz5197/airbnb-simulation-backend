@@ -134,17 +134,6 @@ module.exports = {
     }
   },
 
-  async fetchUser2(req,res){
-
-    try{
-      // request.user is getting fetched from Middleware after token authentication
-      const user = await Users.findById(req.params.id);
-      res.json(user);
-    }
-    catch (e) {
-      res.send({ message: "Error in Fetching user" });
-    }
-  },
   //
   // auth check middleware to be deconstructed
   //
