@@ -42,6 +42,7 @@ module.exports={
     },
 
     async add(req,res,next){
+      const userId = req.user.id;
         const {
           place_type,
           space_allowed,
@@ -59,15 +60,8 @@ module.exports={
         } = req.body;
       
         try {
-          let place = await Places.findOne(
-            {place_type,space_allowed,num_guests,total_bedrooms,total_bathrooms,num_beds,
-              title,summary,address,amenities,images,price_per_night,cancellation_option});
-          if (place) {
-              return res.status(400).json({
-                  msg: "Place Already Exists"
-              });
-          }
-          place = new Places({
+          let place = await Places.findOne({
+            user_id: userId,
             place_type,
             space_allowed,
             num_guests,
@@ -80,7 +74,28 @@ module.exports={
             amenities,
             images,
             price_per_night,
-            cancellation_option
+            cancellation_option,
+          });
+          if (place) {
+              return res.status(400).json({
+                  msg: "Place Already Exists"
+              });
+          }
+          place = new Places({
+            place_type,
+            user_id: userId,
+            space_allowed,
+            num_guests,
+            total_bedrooms,
+            total_bathrooms,
+            num_beds,
+            title,
+            summary,
+            address,
+            amenities,
+            images,
+            price_per_night,
+            cancellation_option,
           });
 
           await place.save();
