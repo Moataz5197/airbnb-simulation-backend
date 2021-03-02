@@ -2,7 +2,7 @@ const usersController = require('../controllers/users_controller');
 const express = require('express');
 const router = express.Router();
 const {body} = require('express-validator');
-const {users_auth} = require('../controllers/users_controller')
+const {users_auth} = require('../controllers/users_controller');
 
 //simple validation and sanitazation
 const usersValidate =[
@@ -20,6 +20,8 @@ router.post('/signup',usersValidate,usersController.signup);
 router.post('/login',usersValidate,usersController.login);
 
 router.get('/me',users_auth,usersController.fetchUser);
+
+router.get("/:id", usersController.fetchUserById);
 
 router.delete('/delete/:id',usersController.delete);
 

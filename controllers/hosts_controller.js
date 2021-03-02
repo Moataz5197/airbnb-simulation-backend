@@ -4,7 +4,7 @@ const {
 } = require("../controllers/places_controllers");
 module.exports = {
 
-    all(req, res, next) {
+    spec(req, res, next) {
         const userId = req.user.id;
         Hosts.findOne({
                 user_id: userId
