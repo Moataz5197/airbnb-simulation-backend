@@ -2,23 +2,36 @@ const Places=require('../models/Places');
 
 module.exports={
 
-    all(req,res,next){
-        const city = req.query.city || '';
+    all(req,res){
+        let limit , skip , city = '' ;
+        
+        if(req.query.limit){
+        const query = req.query.limit.split("?");
+          console.log(query.length,query[0]);
+         if (query.length >= 1 )limit = parseInt(query[0]) || '';
+         if (query.length >= 2 )skip =  parseInt(query[1].split('=')[1]) || '';
+         if (query.length == 3 )city =  query[2].split('=')[1] || '';
+        }
+        console.log(limit,skip,city);
+        if(limit !== undefined && skip  !== undefined){
+          Places.find({}).skip(skip).limit(limit)
+          .then(places => res.status(200).send(places))
+          .catch(console.error);
+        }
         if(city!==''){
           Places.find({'address.city':city})
           .then(places => res.status(200).send(places))
-          .catch(next);
+          .catch(console.error);
         }
-        else{
+        if(city === ''&& limit === undefined && skip === undefined){
           Places.find({})
           .then(places => res.status(200).send(places))
-          .catch(next);
+          .catch(console.error);
         }
     },
 
     async spec(req,res){
        try{
-         
         const place = await Places.findById(req.params.id);
         res.status(200).json(place);
        }
