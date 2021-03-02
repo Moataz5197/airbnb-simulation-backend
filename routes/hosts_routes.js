@@ -9,6 +9,8 @@ const {add:addPlace , delete:deletePlace} = require("../controllers/places_contr
 // hosting routes
 
 router.get("/", users_auth, hostsController.spec);
+router.get("/hosts", hostsController.all);
+
 router.post('/hostPlace',[users_auth,addPlace],hostsController.add);
 router.delete('/deletePlace/:id',[users_auth,hostsController.delete],deletePlace);
 

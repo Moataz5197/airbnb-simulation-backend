@@ -16,6 +16,13 @@ module.exports = {
             .catch(next);
     },
 
+    all(req, res, next) {
+        Hosts.find({})
+            .then((hosts) => {
+                res.status(200).json(hosts)
+            })
+            .catch(next);
+    },
 
     async add(req, res, next) {
         try {            
