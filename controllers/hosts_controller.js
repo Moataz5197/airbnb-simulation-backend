@@ -2,6 +2,7 @@ const Hosts = require("../models/host");
 const {
     add: addPlace
 } = require("../controllers/places_controllers");
+const Places = require("../models/Places");
 module.exports = {
 
     spec(req, res, next) {
@@ -89,6 +90,35 @@ module.exports = {
                 })
             })
             .catch(next);
-    }
+    },
+    
+    deleteFromAdmin(req, res, next) {
+        // const userId = req.user.id;
+        const placeId = req.params.id;
+        Places.findOne({
+            _id: placeId
 
+        })
+        .then((place)=>{
+           Hosts.findOne({
+                   user_id: place.user_id
+               })
+               .then((hosts) => {
+                   for (let index = 0; index < hosts["listings"]["place_ids"].length; index++) {
+                       let palce = hosts["listings"]["place_ids"][index]["place_id"]
+                       if (palce == placeId) {
+                           hosts["listings"]["place_ids"].splice(index, 1)
+                           console.log("deleted")
+                           break;
+                       }
+                   }
+                   Hosts.findByIdAndUpdate({
+                       _id: hosts["_id"]
+                   }, hosts).then(() => {
+                   next();
+                   })
+               })
+        })
+            .catch(next);
+    }
 };
