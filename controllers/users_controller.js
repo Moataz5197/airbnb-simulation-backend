@@ -2,6 +2,7 @@ const Users = require('../models/Users');
 const { validationResult } = require('express-validator');
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const tokenList = {}
 
 
 module.exports = {
@@ -19,6 +20,7 @@ module.exports = {
   //signup middleware
   //
   async signup(req, res) {
+    console.log(req.body);
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -57,9 +59,9 @@ module.exports = {
       };
       jwt.sign(
         payload,
-        "randomString",
+        "randomStringSecret",
         {
-          expiresIn: 10000,
+          expiresIn: "5m",
         },
         (err, token) => {
           if (err) throw err;
@@ -93,6 +95,20 @@ module.exports = {
           id: user.id,
         },
       };
+      const token = jwt.sign(payload, "randomStringSecret", { expiresIn: "20m"});
+      const refreshToken = jwt.sign(payload, "randomStringSecretForRef", { expiresIn: "1h"});
+      const response = {
+        "status": "Logged in",
+        "token": token,
+        "refreshToken": refreshToken,
+      }
+      tokenList[refreshToken] = response;
+      //console.log(tokenList);
+      res.cookie("refreshToken", refreshToken,{
+        httpOnly:true
+      });
+      res.status(200).json(response);
+      /*
       jwt.sign(
         payload,
         "randomString",
@@ -103,10 +119,35 @@ module.exports = {
           if (err) throw err;
           res.status(200).json({ token });
         }
-      );
+      );*/
     } catch (e) {
       console.error(e);
       res.status(500).json({ message: "Server Error" });
+    }
+  },
+  refresh (req,res){
+
+    const postData = req.ref;
+    
+    
+    
+    // if refresh token exists
+    if((postData.refreshToken) && (postData.refreshToken in tokenList)) {
+      
+      const payload = {
+        user: {
+          id: req.user.id,
+        },
+      };
+        const token = jwt.sign(payload, "randomStringSecret", { expiresIn: "20m"});
+        const response = {
+            "token": token,
+        }
+        // update the token in the list
+        tokenList[postData.refreshToken].token = token
+        res.status(200).json(response);        
+    } else {
+        res.status(404).send('Invalid request')
     }
   },
   //
@@ -139,14 +180,16 @@ module.exports = {
   //
   users_auth(req, res, next) {
     const token = req.header("token");
+    
     if (!token) return res.status(401).json({ message: "Auth Error" });
     try {
-      const decoded = jwt.verify(token, "randomString");
+      const decoded = jwt.verify(token, "randomStringSecret");
       req.user = decoded.user;
+      req.ref = {refreshToken:req.cookies.refreshToken}
       next();
     } catch (e) {
       console.error(e);
-      res.status(500).send({ message: "Invalid Token" });
+      res.status(500).send({ message: "Invalid Token or Expired" });
     }
   },
   //

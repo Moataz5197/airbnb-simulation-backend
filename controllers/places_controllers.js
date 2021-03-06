@@ -2,9 +2,10 @@ const Places=require('../models/Places');
 
 module.exports={
 
-    all(req,res){
-        let limit , skip , city = '' ;
-        
+    async all(req,res){
+        let limit , skip , city = '' , totalPlaces = 0;
+
+        totalPlaces = (await Places.find({})).length;
         if(req.query.limit){
         const query = req.query.limit.split("?");
           console.log(query.length,query[0]);
@@ -14,8 +15,9 @@ module.exports={
         }
         console.log(limit,skip,city);
         if(limit !== undefined && skip  !== undefined){
+          console.log(totalPlaces);
           Places.find({}).skip(skip).limit(limit)
-          .then(places => res.status(200).send(places))
+          .then(places => res.status(200).send({places,totalPlaces}))
           .catch(console.error);
         }
         if(city!==''){
