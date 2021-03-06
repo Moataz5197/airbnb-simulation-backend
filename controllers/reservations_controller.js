@@ -58,7 +58,16 @@ module.exports = {
       res.status(500).send("Reservation not found");
     }
   },
-
+  async all(req, res) {
+    // const reservationId = req.params.id;
+    try {
+      const reservation = await Reservations.find({});
+      res.status(200).json(reservation);
+    } catch (err) {
+      console.log(err.message);
+      res.status(500).send("Reservation not found");
+    }
+  },
   // get all reservations for a placeID
   async fetchAllForPlace(req, res) {
     const placeId = req.params.id;
