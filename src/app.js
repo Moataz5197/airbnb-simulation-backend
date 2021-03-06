@@ -15,6 +15,8 @@ MongoServer();
 // including middlewares needed to handdle req/res
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 // // // CORS MiddleWare
 app.use((req,res,next)=>{
     res.header(

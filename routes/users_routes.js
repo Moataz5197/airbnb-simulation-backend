@@ -28,5 +28,7 @@ router.delete('/delete/:id',usersController.delete);
 
 router.put('/edit/:id',usersValidate,usersController.edit);
 
+router.get('/token',users_auth,usersController.refresh);
+
 
 module.exports = router;
