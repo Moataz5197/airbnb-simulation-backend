@@ -8,21 +8,21 @@ module.exports={
         totalPlaces = (await Places.find({})).length;
         if(req.query.limit){
         const query = req.query.limit.split("?");
-          console.log(query.length,query[0]);
+          console.log(query.length,query[1]);
          if (query.length >= 1 )limit = parseInt(query[0]) || '';
          if (query.length >= 2 )skip =  parseInt(query[1].split('=')[1]) || '';
          if (query.length == 3 )city =  query[2].split('=')[1] || '';
         }
-        console.log(limit,skip,city);
-        if(limit !== undefined && skip  !== undefined){
+        console.log(limit,"x",skip,"X",city);
+        if(limit !== undefined && skip  !== undefined && city ==''){
           console.log(totalPlaces);
           Places.find({}).skip(skip).limit(limit)
           .then(places => res.status(200).send({places,totalPlaces}))
           .catch(console.error);
         }
-        if(city!==''){
-          Places.find({'address.city':city})
-          .then(places => res.status(200).send(places))
+        if(city!=='' && limit !== undefined && skip !== undefined){
+          Places.find({'address.city':city}).skip(skip).limit(limit)
+          .then(places => res.status(200).send({places,totalPlaces}))
           .catch(console.error);
         }
         if(city === ''&& limit === undefined && skip === undefined){
